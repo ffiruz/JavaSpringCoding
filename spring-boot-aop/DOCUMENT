@@ -1,0 +1,23 @@
+Aspect Oriented Programming
+
+Yazdığımız kodun kalitesini arttıran 3 temel unsur
+
+1.Reusability
+2.Modularity
+3.Maintainability
+
+
+Cross Cutting Concern yaklaşımı
+
+Cross Cutting Concern (Kesişen ilgiler):Geliştirdiğimiz uygulamalarda veya yazdığımız modüllerde çoğu zaman ortak işleri yapan yapılar bulundurabiliriz. 
+Örneğin, Method Profiling, Exception Handling, Method Authorization, Request Logging, Caching, Event Analytics (Özellikle mobil platform) vb. 
+Bu işlemlerin tümü bizim için Cross Cutting Concern.
+
+
+Yaptığımız proje de bir çok paket oluşturup , paketler arasına girme işlemi yapacağız.
+
+
+@aspect ile ilgili classın aspect tanımlamasını yapıyoruz.Ardından ilgili anatasyonlarla metodları tanımlıyoruz.(@Before,@After vs.)
+
+--
+Mesela veritabanına kayıt ederken , sevice katmanı altındaki tüm classlar için save metodundan önce kaydı ekleyen kişinin bilgilerini security contextden al.Ve Loglama yap. vs gibi işlemlerde aspect ile kolayca implemente edebiliriz.

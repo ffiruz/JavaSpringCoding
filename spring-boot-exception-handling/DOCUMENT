@@ -1,0 +1,11 @@
+EXCEPTION HANDLING-HATA YÖNETİMİ
+
+-->Bir uygulamada veya API da hata olduğunda , bu hata bazen kontrolümüzde olabilirken bazen kontrolümüz dışında olabilir.
+Örnek olarak 5 numaralı id li bir kayıt başkası tarafından kullanılırken , 5 numaralı id üzerine kayıt ekleme vs . denilebilir.
+
+
+Bu exception'ı yönetirken local bir şekilde veya tüm controller daki API ları yönetebileceğimiz global bir exception ile yönetebiliriz.
+
+
+
+

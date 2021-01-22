@@ -1,0 +1,120 @@
+Apı üserinde sorgulama yaparak belli propertylerin listelenmesini sağlayan bir yaklaşım
+Veri tabanı falan değil.Sadece sorgulama yaklaşımı.
+
+Neden kullanlır?-->Çok fazlaca verinin client a indirilmesi veya processing oluşturulmasını önüne geçmek
+Facebook tarafndan geliştirildi.
+Normalde biz Rest de JSON data gönderiyoruz.Client bu JSON data da hangisiyle ilgileniyorsa bunlarla çalışcağız.Bu şekilde de gereksiz verinin taşınmasını engellemiş oluruz.
+
+Yani asıl amaç , rest ile client tarafındaki gereksiz veri akışının önüne geçmek.Maliyeti azaltır.
+
+JavaScript kütüphanesi olarak da Facebook tarafınfan aktif olarak geliştirilen Relay Framework.
+
+GraphiQL=> GraphQL sorgularını yazdığımız arayüz.
+
+
+Mesela Facebbok ta bir post paylaştığımızı düşünelim. 
+Bunun json diyagramı:(Bir post da , image dosyası , url , kaç kişi beğenmiş , beğenenlerin isimleri ,bunu paylaşan kişi adı , tarihi vs.)  
+
+{
+posts{
+	id
+	description
+	content
+	date
+	aouthor {
+		id
+		nameSurname
+		isOnline
+		title
+	}
+	like {
+		count
+		user{
+			nameSurname
+			 } 
+		}		
+	}
+
+}
+
+Mesela Client tarafında Android ve Vue ile çalıştığımızı düşünelim.Android tarafınfa title alanı kullnılıyor.Oysa ki Vue js de kullanılmıyor..
+İşte bu noktada Graphql ile  bu sorunu da çözebiliriz.
+
+
+query {    => içerisinde sorguları yazarız.Hanfi veriyle çalışmak istiyorsak içerisine tanımlarız.Ve bize geri dönüş yapan bie engine çalışır.
+	
+	viewer {
+	
+		fields..
+		}
+	
+}
+ 
+Kullanabileceğimiz hazır bir sunucusu var.Tüm dilleri destekliyor.
+
+
+Yaptığımız projede H2 veri tabanı kullandık.GraphQl dependecieleri ekledik.
+
+
+
+Resources altında graphql konfigurasyon dosyamız var.Vehicle apı ları dışarı açacağımız dosya bı konfigurasyon dosyası olacak.
+Bir nevi rolleri tanımladığımız dosyamız.
+
+
+<!---Geri dönüş nesnlerini type şeklinde etiketliyoruz.GraphQL sunucusunun kabul ettiği değerler(paramtre gibi) input olarak tanımlarız.
+--	İki tane API resolver var.Bir tanesi  query(sorgu get gibi) , diğeri mutation (verileri manipule etmek için save, update gibi)
+
+type Vehicle {
+    id: ID!,  => Bu ifade ID değerinin uniq ve null olamaz (!) bilgisini taşıması için
+    
+    
+ input VehicleDto {
+    type: String!,           ===>Graphql de bir vehicle nesnesi oluşturabilmek için gerekli propertyleri belirtiyoruz.(!) ile de onları zorunlu gönderilmesi gerektiğini bildiriyoruz.
+    modelCode: String!,
+    brandName: String
+}
+
+
+
+localhost:8090/graphiql ==>Burada bizim arayüz yayınlanıyor.Burada istersek graphql uzantısını değiştirebiliriz.Arayüzmüzün ayaklanması pom.xmlde ki grahhql dependecie ile oldu.
+
+
+İlgili arayüz açıldığında arayüzü sağ tarafında  (Docs)  query ve mutation alanları görülecek.Orada ilgili metotların nasıl çalıştığı belirtiliyor.
+
+query {
+  getVehicles(type:"test") {  =>Burada metodu çalıştırıyoruz ve geri dönecek değeri (id) belirtiyoruz.
+  							İşte gereksiz datayı çekmeyebiliyoruz.Sadece id mi gerekli.O zaman id fieldsını veriyoruz.
+    
+    id
+  }
+
+}
+
+
+
+Kayıt işlemi(mutation)
+
+
+mutation {
+  createVehicle(vehicle:{type:"test",modelCode:"1",  brandName:"test2"})  //vehicle geri dönüş değeri,Parmetre olarak da VehicleDto da tanımlanan fieldları veriyoruz.Ve bir veri tabanı kaydı oluşturuyor.
+  { 
+    id,
+  	launchDate,  =>Geri dönüş değerleri
+    brandName
+    
+    
+  }
+
+}
+
+
+Çok fazla client bir service e bağlıysa kullanılması gayet güzel.En çok mobil cihazlarda kullanılıyor.
+
+
+  getVehicles(type: String):[Vehicle] ==>Geri dönüş değerinin bir array olduğunu belirtiyoruz([]).Ve geri dönüş değerinin bir type ile belirtiğildiğine dikkat et. 
+
+
+ getById(id: ID):Vehicle =>Burada array dönmüyor.Sadece bir tane vehicle instancı dönüyor.
+
+
+

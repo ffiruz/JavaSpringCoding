@@ -1,0 +1,24 @@
+EVENT DRİVEN  (OLAY GÜDÜMLÜ)
+
+Spring dahili olarak event management yapısı sunar.Spring events
+
+
+Yaptığımız uygulama ;Rezervasyon uygulaması ..
+
+Web den API ya bir request geldiğini düşünelim.(İstek rezervasyon isteği)
+
+Bu Apı nın arkasında ReservationService bu işi handle ediyor.
+
+ReservationService'i  dinleyen bir ReservationCreatedEventListener ımız var.Bu listener pakaeti altında.Bu listener bir event yayınlar.
+Bu listener altında da 3 tane process eventimiz var.(Notification,Hotel Integration,Availibility Change)
+
+Bu ReservationService içerisinde birden çok process var.
+Mesela Notification (client'a uyarı gönderecek process) , Hotel Integration(Hoteli bilgilendirecek process), Availibility Change(Hotelin uygunluğunu değiştime) vs bir çok process var.
+Bu processlerin hepsinin çok uzun süren işlemler olduğunu düşünelim.Bu nedenle işlemler bittikten sonra client tarafına bir bilgilendirme aynı zamanda processler başlamadan önce client tarafını bilgilendirmek gerekebilir.
+
+
+Spring default da bize bunu sunuyor.
+
+
+İsteği  Postman den sağlayacağız.
+

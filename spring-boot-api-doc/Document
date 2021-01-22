@@ -1,0 +1,6 @@
+Open API bir spesifikasyondur.
+Swagger Rest API geliştirmek için gerekli bir sözleşme standardı ve bu çerçevede işlev gören yardımcı araçlar sunan bir teknolojidir. 
+Swagger sunduğu standart ve araçlarla API tasarım, geliştirme, dokümantasyon ve test aşamasında kolaylık sağlamaktadır.
+
+Springfox:Swaggerın implemantasyonu ile SPRİNG uygulamlarında kullanılabilir.
+

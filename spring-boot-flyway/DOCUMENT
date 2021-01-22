@@ -1,0 +1,72 @@
+FLYWAY
+
+
+-->Veri tabanı migrationları(göç etme) yapabilmemizi sağlayan bir tool.
+-->flywaydb.org sitesinde tutorial bulunabilir.
+
+
+Ne işe yarar ?
+
+Çok büyük projelerde  , veri tabanını versiyonlanma  ihtiyacı duyduğumuz projelerde kullanılır.
+
+-->Veri tabanımızın her versiyona özel çeşitli değişiklikler yapmamız gerekebiliyor.
+-->Bazen veri tabanındaki shemalarda bazen de veri tabanındaki fieldlarla ilgili bir takım updateler yapmamız gerekebiliyor.
+(Schema veritabanındaki tablo, view veya stored procedure gibi objeleri gruplamaya yarayan bir ifadedir. Default schema dbo dur.)
+
+Bunun içinde flyway frameworku kullanılır.Flyway in yaptığı şey uygulama başlamadan önce , veri tabanına uygulanmamış herhangi bir mıgration varsa yani değişiklik scripti varsa bu scripti veri tabanına uyguluyor.
+
+Bunu yaparken flyway veri tabanı içerisinde bir tablo tutuyor .Bu tabloda uygulanan ve uygulanmayan migrationların listesini tutar.
+
+Flyway resoures altında bir dizinde veri tabanına uygulanan ve uygulanmayan dosyaların sürecini takip ediyor.
+
+-->Resources->db->migration  -->kendimiz oluşturuyoruz.
+
+-->Bu klasörün içerisinde sql scriptlermiz var.İsimlendirme yaparken flywaydb.org sitesinde naming standarta göre yapmamız uyumlu olur.
+-->Versionlama için  ->   V1..name.sql-->V-versiyon numarası-__-isim.sql
+-->Geri alanımasını istediğimiz migration (Undo migration) --> U--Versiyon numarası --isim.sql
+
+
+Kendi oluşturduklarımızı inceleyelim.
+
+V1__db_init.sql -->Vei tabanının init etme işlemi , schema oluşturma 
+
+--> Burada auto increment den ziyade sequence oluşturduk.
+--->CREATE SEQUENCE seq_users start 1 increment 1;  -->1 den başla 1 er 1 er artarak ismini --->CREATE SEQUENCE seq_users start 1 increment 1;  -->1 den başla 1 er 1 er artarak ismini olarak tanımkadık.
+-->Ve bu ismi tabloda kullnadık.
+
+
+V2__insert_default_user.sql-->Veri tabanına kayıt ekleme 
+
+
+
+V3_users_update.sql-->Mesela belli bir süre sonra veri tabanında değişiklik yapmamız gerekti.Mesela kolon eklememiz gerekti vs.Bu örnek var olan bir kaydı güncelledik.
+
+Burada dikkat edilmesi gerekn mevcut oluşturduğumuz bir migration'ı değiştiremeyiz.Çünkü ilk oluşturulduğu boyut saklanıyor.Eğer bir değişiklik yapılcak sa yeni bir migration oluşturulmalı.
+
+
+Migration larda id üzerinde işlem yaparken dikkat etmeliyiz.Çünkü farklı veri tabanlarında farklı id ler olabilir.Mesela canlı veri tabanı ile test veri tabanı arasında farklılıklar olabilir.
+
+Çok kompleks projelerde veri tabanının düzenli şekilde versiyonlaması için gerekli.
+
+PostgreSql örneği üzerinde çalışılacak.
+
+docker-compose.yml içierisnde postgreSql imageını ekledik.Ve bir instanceını ayağa kaldıracağız.
+
+-->flyway dependenciysi pom.xml'e ekledik.
+
+-->Application property dosyası içerisinde database konfigurasyonları tanımladık.driver,userName,password.User name ile password docker-compose.yml dosyasındaki image ile aynı olmalı.
+
+spring.jpa.hibernate.ddl-auto=validate -->Defaultda spring tarafından oluşturulan veri tabanı shemasını devr dışı bırakmak için.
+
+Böylece veri tabanı shemasını sadece FLYWAY'in oluşturulması sağladık. 
+
+
+-->İşte veri tabanında versiyonlamayı bu şekilde yaparız.
+
+
+
+
+
+ 
+ 
+ 

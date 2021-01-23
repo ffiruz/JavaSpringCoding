@@ -1,0 +1,107 @@
+Loglamaya neden ihtiyaç duyulur ?
+Çalışan uygulamanın hatalarını , metrik bilgilerini , performans değerlerini , çalışma düzeninin kontrol edebilmek için kulanırız.
+
+Loglama da Java bize java.utill.loging arayüzü sunar.
+İçerisinde bir çok kavram var.
+Level bu kavramlardan biri.Level , bir logun seviyesini belirtir.
+1.SEVERE -->Uygulama için en kritik mesajı vermek için.
+2.WARNING
+3.INFO
+4.FINE
+5.FINER
+6.FINEST ->Uygulama için önemi en az mesajlar.
+
+
+Soring frameworkun sunduğu log levelları daha çok kullanılıyor.
+1.ERROR->hata 
+2.WARN->uyarı
+3.INFO->bilgi vermek için.Uygulama ayağa kalkarken hangi yollardan geçmiş vs. 
+4.DEBUG->Debug modunda açıldığında , daha dataylı mesajları alabilmemizi sağlar.
+5.TRACE-->Uygulamanın durumu hakkında bilgi almak , 
+
+
+->Java nın bize sunduğu consolehandler da bulunmaktadır.Bizim kulandığımız terminalde logların görünmesini sağlar.
+-->FileHandler-->Logları consolda vermeyebiliriz.Bunun yerine bir dosyada logları yazabilmemizi sağlayacak.
+
+
+---> Spring framework de , Java.util.logging altyapısı sunarak , Log4J2 ve Logback frameworklerini sağlar.Yaygın kullanılan.
+Spring default da LogBack i kullanır.
+
+-->Logları renklendirme de yapabiliriz.
+Fatal(Red),Error(Red),Warn(Sarı),Info(Yeşil) vs.
+
+
+-->Spring boot default da info log level ile çalışır.Eğer level ı değiştirmek istiyorsak applicatiomn.property dosyası içerisinde değişiklik yapabiliriz.
+-- Böylece debug loglarını da görüntüleyebiliriz.
+logging.level.root=INFO -->Bütün loglar info
+logging.level.org.springframework.web=INFO-->Spring loglar info.Eğer Debug yazsaydık console da daha fazla log görecektik.
+logging.level.com.haydikodlayalim.logging.api=DEBUG-->Bizim yazdığımız api paketi altındaki classların logları debug modda çalışsın diyoruz. 
+
+-
+
+-Eğer farklı konfigurasyonlarla çalışacaksak , logback-spring.xml dosyası ile farklı konfigurasyonları yönetebiliyoruz.
+Yukulrıda yazdığımız logların hepsini bu konfigurasyon dosyası içerisinde yönetebiliyoruz.
+
+İçeriğini inceleyelim.
+
+    1.<property name="LOG_PATH" value="./logs" />  -->LOG_PATH adında bir değişken taımlıyoruz.Bu değişkeni farklı yerlerde kullanıyoruz.Loglarımız ./logs altında tutulsun.
+    
+    
+   
+    2.    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">  -->Bu bizim console appendarımız.Consolda yazılan loglarını özellikleri yönetiyoruz.
+        <encoder>
+            <pattern>
+                %d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger{36}.%M - %msg%n  -->Renklendirme yapılmış.Tarih formatlarındaki değişiklikler vs yapılabilir.
+            </pattern>
+        </encoder>
+    </appender>
+    
+
+ 3.   <appender name="FILEOUT" class="ch.qos.logback.core.rolling.RollingFileAppender">  --->Bir txt dosyası için loglarımızı yönetiyor.
+        <file>${LOG_PATH}/spring-boot-logging.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <Pattern>%d %p %C{1.} [%t] %m%n</Pattern>  -->Renklendirme yapmıyoruz.
+        </encoder>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/archive/spring-boot-logging-%d{yyyy-MM-dd}.%i.log</fileNamePattern> -->Geçmiş dosyaların loglarını koyacağımız dosya yolu.
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize> ->Bir dosyanın boyu max 10 mb vs.
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+
+
+4.    <springProfile name="dev"> -->Eğer dev  profile ile uygulamayı çalıştırcaksak hem konsola hem de dosyaya yazacak.
+        <root level="info"> -->Tüm libarary için INFO da loglama yapacak.
+            <appender-ref ref="STDOUT"/> 
+            <appender-ref ref="FILEOUT"/>
+        </root>
+        <logger name="com.haydikodlayalim.logging.api" additivity="false" level="debug"> -->Ancak kendi geliştirdiğimiz api lar için loglarımız DEBUG da loglanacak.Daha detaylı.
+            <appender-ref ref="STDOUT"/>
+            <appender-ref ref="FILEOUT"/>
+        </logger>
+    </springProfile>
+    
+    
+    
+ 5.    <springProfile name="prod">  -->Eğer prod profile için uygulamayı çalıştıracaksak sadece file da loglar yazsın diyoruz.
+        <root level="error">-->Uygulamanın kendi libarary logları error .Böylece kendi yazdığımız kodlar dışında bir hata olduğunu görebilecğiz.
+            <appender-ref ref="FILEOUT"/>
+        </root>
+        <logger name="com.haydikodlayalim.logging.api" additivity="false" level="debug"> -->Kendi yazdığımız API lar için DEBUG modda çalışacak.
+            <appender-ref ref="FILEOUT"/>
+        </logger>
+    </springProfile>   
+
+
+Hangi profile ı çalıştıracağımızı application.properties dosyası içerisinde belirtebiliriz.
+ 
+ spring.profiles.active=prod şeklinde
+ 
+Eğer prod ile çalıştırdığımız da  logları ->  ${LOG_PATH}/spring-boot-logging.log da görebiliriz.logs adında bir klasör oluşacak.Ve burada logları göreceğiz.
+Dikkat edersen uygulama ilk ayağa kalktığında prod profile da uygulamnın loglarını göremeyebiliriz.Çünkü error level ında açtık.Ve hata olmadığı sürece log yazılmayacak.
+
+Eğer spring.profiles.active=dev deseydik logları console da görebilecektik.
+

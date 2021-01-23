@@ -1,0 +1,2 @@
+2021-01-23 15:03:43,700 INFO com.haydikodlayalim.logging.api.LogEndpoint [http-nio-8080-exec-1] get details methodu basladi
+2021-01-23 15:03:43,702 DEBUG com.haydikodlayalim.logging.api.LogEndpoint [http-nio-8080-exec-1] internalLogDetail methodu basladi

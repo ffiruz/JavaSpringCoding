@@ -1,0 +1,28 @@
+REDİS=REMOTE DICTIONARY SERVER
+
+-> Key-value şeklinde hazırlanmış bir NoSql veritabanıdır. 
+->In memory çalıştığı için cevap süresi çok hızlı.
+
+Yaygın kullanımları
+
+1.Cache olarak kullanma
+  -Bir veri tabanı sisteminin cache'i olarak kullanabiliriz.Mesela çok ilişkili,maliyetli bir sorgu yazdığımızı düşünelim.Bu sorguyu bir kere çalıştırdıktan sonra redis ile cache lediğimizde
+   bir daha ki requestte redis üzerinden sorgu çalışacak.Uzun süreli çalışan bir metodda da cachable ile redis cache de yönetebiliriz.  
+
+2.Session Storage/Cache
+  -Bir uygulamanın iki instance ı çalıştığı düşünelim.Ve load balancer ile gelen requesti uygun olan instance a aktaracağını düşünelim.Bu instance uygulamalarının birbiri ile haberleşmesini sağlayabilir.
+  -Spring framework redis cache'i default da destekliyor.
+3.PUB/SUB-->Publisher Subscriber->Twitter da bir kullanıcıya subscribe olduğunda , o kullanıcının  attığı  mesajları almak vs.
+
+
+-Default da veri tabanı olarak da kullanılabilir.
+
+
+
+-->Docker image üzerinden kurulumunu yapacağız.
+
+
+-->localhost:8080/test apı na bir request attığımız da f12->network ->time a baktığımızda requestin saniyesini görebiliriz.Uygulamamıza göre 5 saniye sonra requeste cevap verdiğini görebiliriz.
+-->Burada redis cache devreye girerek işlemi yapıyoruz.
+-->Ardından tekrar localhost:8080/test apı na bir rewuest attığımızda 8 mili saniye gibi az bir sürede cevap veriri.Çünkü biz getMapping altındaki longRunnigMethod() metodunu cacheleyerek ilk istekten sonra cacheden veriyi getirmesini istedik.
+-->clearCache() metodu e cache i siliyoruz.Ancak buradaki şartımız ise 5 tane request atıldıktan sonra ilgili cacche i siliyoruz. 

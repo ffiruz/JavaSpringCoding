@@ -1,0 +1,75 @@
+Reactive Stream 
+JDK9 ile birlikte , Flow  API olarak eklenmiş bir özelliktir.
+Aslında Flow Apı da , reactive stream standartının JDK içerisine eklenmesinden daha fazla birşey değildir.
+Haliz hazırda Reactive Stream işleyen ,  RxJava, Akka, Vert.x vb araç veya kütüphaneler mevcut.
+-Aslında reactive-stream.jar ve ilgli jarlar ile JDK 8’e de ekleyebiliriz.
+
+Öncelikle Reactive Programming nedir ?
+
+Günce hayata uyarlayalım:
+ 
+ -Bir kahveciden kahvenizi aldınız ve çıktınız. Belirli bir süre sonra kahvenizden ilk yudumu aldığınızda şeker ve süt eklenmediğini farkettiniz.
+ - Bu durumda kahveciye dönerek yeni bir kahve siparişi vermeli ve tüm süreci yeniden işletmelisiniz.
+ - Bir kahvecide kahve alma sırasına girdiniz. Kahvenizi alıncaya kadar başka bir iş yapamazsınız. 
+ -Telefonuza bakamaz, tweet atamazsınız. Belki de o tweet ile dünyayı kurtaracaktınız. Kim bilebilir?
+ 
+Yan etkileri işleyebilecek veya yan etkileri de anında işleme alabilecek şekilde yapılan tasarımlara sahip uygulamalara / kod parçacıklarına Reactive denir. 
+Örneğin kahve sırasında beklerken başka bir işlemi yapmak side effect’i de program içerisinde işleme almak demektir.
+Reaktif programlar; uygulama çalışırken kod satırlarındaki akışı takip etmek yerine olayları takip ederler. (event)
+
+Event
+Olayları gelecekte oluşabilecek herhangi bir işlem ya da işlem isteği olarak düşünebiliriz. Bir nevi oluşabilecek side effects olarak da adlandırabiliriz.
+
+Stream
+Genelde programlar birden fazla olayı ele aldıklarından bu olaylar bir dizi gibi düşünülebilir ya da bir dizi oluşturabilirler. 
+Bu olaylar dizisine ise Stream denir. (stream of events) Reaktif programlama; stream’ler üzerine kuruludur. 
+Bu stream’ler bir çok yolla uygulamaya ulaşabilir. Uygulama daima bu stream’lere cevap verebilecek durumda olmalıdır.
+
+Güncel hayata uyarlama yaparsak;
+
+-Kahvecide beklerken twitter akışını takip etmek kahve alma stream’i içerisinde yan bir olaydır. (side effect)
+-Ya da kahvecinin iyi bir twitter kullanıcısı olduğunu düşünelim. Kahveci tweet atarak takipçileriyle promosyon kodu paylaşmaktadır. 
+ Siz de kahvecinin takipçisi iseniz bu promosyon kodunu kullanarak indirim kazanabilirsiniz. Bakın kahve alma sürecine; dışarıdan ve süreci doğrudan etkileyen bir olay eklemiş olduk. (side effect)
+ 
+ Buradan hareketle Reaktif uygulamalar; aynı anda birden çok olayı –Stream– dinleyerek ya da takip ederek pozisyon alabilen ya da değiştirebilen kod parçacıklarından oluşurlar.
+ 
+Flow API dinamik Push/Pull temelli Publish-Subscribe yaklaşımı üzerine geliştirilmiştir. Java, Publisher ve Subscriber arasındaki asenkron bir iletişim vardır.
+-Subscriber, Publisher’dan Subscription’ın request metotunu kullanarak işleyebileceği kadar veri ister(pull), Publisher da bu sayıdaki veriyi gönderir(push).
+
+-Flow API’nin çalışma mantığı
+
+1-Subscriber bir nesne Publisher nesnesine subscribe metotu ile abone olur.
+
+2-Publisher nesnesi kendi Subscription implementasyonundan oluşturduğu nesnesini, Subscriber’in onSubscribe metotuna gönderir.
+
+3- Bu işlem sonrasında hem subscriber da hem de publisher da iletişimleri için kullanacakları Subscription nesnesi oluşur.
+
+
+Subscribe interface içindeki metotlar 
+
+onSubscribe(Flow.Subscription) → Subscribe işlemi sonrası çağrılan metottur. Bu metot Flow.Subscription tipinde bir parametre bekler. Subscription Publisher içerisinde oluşturulur.
+
+onNext(T) → Yayımlanan verilerin geldiği metottur.
+
+onError(Throwable) → Publisher veya Subscription da meydana gelebilecek bir hata sonrası çağrılan metottur. OnError çağrıldıktan sonra abone başka bir mesaj alamaz.
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+Reactive Stream non -blocking bir yapıdır.
+
+Blocking :Bir request geldiğinde mvc ile iletilip , veri tabanına gelip vs. requestin bu veri tabanından response beklenip tekrar geldiği mvc yolunu takip etmesiyle (pipeline) requeste cevap verilir.
+İşte bir thread bu süreci işlettiğini düşünürsek , mesela veri tabanına gönderilen requestin bekleme süresi 5 sn.Blocking bir yapıda bu 5 saniyeyi thread bekleyip dönen response ile yoluna devam eder.
+Burada Reactive Streamin çözüm getirdiği yapıya non-blocking yapısı denir.Burada thread 5 saniye beklemez.Gidip başka bir request alıp gelir.Yani beklemez.Bu pipeline üzerinde sürekli requestii taşır.Yani blocklanmaz.Farklı işlerde yapar.
+Eğer herhangi bir requestin cevabı oluştuğunda onNext() veya hata oluştuğun da onError() metodu ile geri dönüş sağlar.Ve kullancıya mesaj dönülür. 
+Spring in non-bocking için sunduğu implemantasyon ise Spring  WebFlux dır.Eğer WebFlux kullanacaksan tüm sistemin WebFluxı desteklyen yapıda olması gerekiyor.Database driverların vs. reactive olması gerekiyor .vs.
+Uygulamamızda MongoDB kullanarak oluşturacağzı.Ancak PostgreSql de kullanılabilir.
+Pom.xml de ilgili dependencileri inceleyebiliriz.
+Docker-compose.yml dosyasında mongoDb nin instanceını ayağa kaldırıyoruz.
+
+
+
+
+
+
+ 

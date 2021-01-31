@@ -1,0 +1,12 @@
+Rest Template
+
+Rest Template ile başka bir api servisi içindeki http metodlarının çağırma işlemleri yapıyoruz.
+
+User------->:8081-------------->:8080------------------------>Database
+                 <--------------
+                 
+Bir kullanıcı :8081 portuna bir istekte bulunacak.Bu portdan da :8080 portundaki uygulamyı çağırma işlemi yapacağız.Ve :8080 poruda gidip database den işlemlerini yapıp.Aaynı şekilde geri dönecek.
+                 
+Bu senaryoda Spring Boot defaultda sağladığı rest Template kullanılacak.
+
+                 

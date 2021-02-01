@@ -1,0 +1,12 @@
+API VERSİYONLAMA
+
+
+-İstemcilere sunduğunuz API sizin ile istemciler arasındaki bir sözleşme gibidir. 
+-Sözleşmeler özel ve tüzel kişileri uzun süreliğine bağlar, siz de API’daki bir özelliği sözleşmeden ötürü silemez ya da değiştiremezsiniz. 
+-Değişen ihtiyaçlara göre bir özelliği değiştirmek istediğinizde yapmanız gereken şey ise eski sözleşmeyi bozmamak ama yeni sözleşme sürümü çıkartmak, yani versiyonlamak.
+
+
+API versiyonlama yaparken farklı teknikler kullanılır.
+1.URI Versioning
+2.Param Versioning
+3.Header Versioning
